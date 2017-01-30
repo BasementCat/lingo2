@@ -54,3 +54,24 @@ class TestClient(unittest.TestCase):
         cl = Client()
         with self.assertRaisesRegexp(requests.HTTPError, '404'):
             del cl['unittest']
+
+
+class TestDatabase(unittest.TestCase):
+    @classmethod
+    def setUpClass(self):
+        self.cl = Client()
+        try:
+            del self.cl['unittest']
+        except:
+            pass
+        self.cl['unittest'] = True
+
+    @classmethod
+    def tearDownClass(self):
+        try:
+            del self.cl['unittest']
+        except:
+            pass
+
+    def test_props(self):
+        self.assertEqual('unittest', self.cl['unittest'].props['db_name'])

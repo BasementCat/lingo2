@@ -30,10 +30,11 @@ setup(
     packages=['lingo2'],
     install_requires=[
         'couchdb',
-        'marshmallow',
+        # 'marshmallow',
         'requests',
         'purl',
-        # 'pytz',
+        'python-dateutil',
+        'pytz',
         # 'arrow',
     ],
     test_suite='nose2.collector.collector',

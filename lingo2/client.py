@@ -60,3 +60,18 @@ class Client(object):
 
     def __delitem__(self, key):
         return self.request('DELETE', '/' + key).json()['ok']
+
+
+class Database(object):
+    def __init__(self, client, database_name):
+        self.client = client
+        self.database_name = database_name
+
+    def request(self, method, path, *args, **kwargs):
+        return self.client.request(method, '/' + self.database_name + path)
+
+    @property
+    def props(self):
+        return self.request('GET', '').json()
+
+    # No magic methods here, since the _rev property is a requirement
