@@ -62,17 +62,17 @@ class DictField(Field):
 
 class StrField(Field):
     def __init__(self, *args, **kwargs):
-        super(StrField, self).__init__(type_=str)
+        super(StrField, self).__init__(type_=str, *args, **kwargs)
 
 
 class IntField(Field):
     def __init__(self, *args, **kwargs):
-        super(IntField, self).__init__(type_=int)
+        super(IntField, self).__init__(type_=int, *args, **kwargs)
 
 
 class FloatField(Field):
     def __init__(self, *args, **kwargs):
-        super(FloatField, self).__init__(type_=float)
+        super(FloatField, self).__init__(type_=float, *args, **kwargs)
 
 
 class UnicodeField(Field):

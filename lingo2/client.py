@@ -5,6 +5,8 @@ import purl
 
 
 class Client(object):
+    global_clients = threading.local()
+
     def __init__(self, uri=None, ssl=None, host=None, port=None, username=None, password=None, default_database=None):
         self.auth = None
         if uri:
@@ -61,8 +63,25 @@ class Client(object):
     def __delitem__(self, key):
         return self.request('DELETE', '/' + key).json()['ok']
 
+    def __enter__(self):
+        if not hasattr(self.global_clients, 'global_clients'):
+            self.global_clients.global_clients = []
+        self.global_clients.global_clients.append(self)
+        return self
+
+    def __exit__(self, type, value, traceback):
+        self.global_clients.global_clients.pop()
+
+    @classmethod
+    def global_client(self):
+        if hasattr(self.global_clients, 'global_clients'):
+            if self.global_clients.global_clients:
+                return self.global_clients.global_clients[-1]
+
 
 class Database(object):
+    global_databases = threading.local()
+
     def __init__(self, client, database_name):
         self.client = client
         self.database_name = database_name
@@ -75,3 +94,24 @@ class Database(object):
         return self.request('GET', '').json()
 
     # No magic methods here, since the _rev property is a requirement
+
+    def get(self, id):
+        return self.request('GET', '/' + id).json()
+
+    def put(self, id, data):
+        return self.request('PUT', '/' + id).json()
+
+    def __enter__(self):
+        if not hasattr(self.global_databases, 'global_databases'):
+            self.global_databases.global_databases = []
+        self.global_databases.global_databases.append(self)
+        return self
+
+    def __exit__(self, type, value, traceback):
+        self.global_databases.global_databases.pop()
+
+    @classmethod
+    def global_database(self):
+        if hasattr(self.global_databases, 'global_databases'):
+            if self.global_databases.global_databases:
+                return self.global_databases.global_databases[-1]
